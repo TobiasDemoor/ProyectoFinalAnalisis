@@ -3,11 +3,12 @@ contains
     function Vprima(V, M)
         implicit none
         real(8), allocatable :: Vprima(:,:,:)
-        real(8) :: V(:,:,:), M(:)
+        real(8) :: V(0:,:,:), M(:)
         real(8), parameter :: G = 6.67384e-11
+        real(8) :: Aux(3)
         integer :: n, i, j
 
-        n = size(V, dim = 2)
+        n = size(V, dim = 3)
         allocate(Vprima(0:3, 3, n))
         Vprima(0,:,:) = 1.0
         Vprima(1,:,:) = V(2,:,:) ! x' = v
@@ -15,11 +16,14 @@ contains
         do i = 1, n
             Vprima(3,:,i) = 0
             do j = 1, i-1
-                Vprima(3,:,i) = Vprima(3,:,i) + G * M(i)*M(j)/sqrt((V(1,:,i)-V(1,:,j))**2)
+                Aux = G * M(i)*M(j)/sqrt((V(1,:,i)-V(1,:,j))**2) * (V(1,:,j)-V(1,:,i))/abs(V(1,:,j)-V(1,:,i))
+                Vprima(3,:,i) = Vprima(3,:,i) + Aux
             end do
             do j = i+1, n
-                Vprima(3,:,i) = Vprima(3,:,i) + G * M(i)*M(j)/sqrt((V(1,:,i)-V(1,:,j))**2)
+                Aux = G * M(i)*M(j)/sqrt((V(1,:,i)-V(1,:,j))**2) * (V(1,:,j)-V(1,:,i))/abs(V(1,:,j)-V(1,:,i))
+                Vprima(3,:,i) = Vprima(3,:,i) + Aux
             end do
+            Vprima(3,:,i) = Vprima(3,:,i)/M(i)
         end do
     end function Vprima
     
@@ -29,7 +33,7 @@ contains
         real(8) :: h
         integer :: n
 
-        n = size(V, dim = 2)
+        n = size(V, dim = 3)
         allocate(rk4SP(0:3, 3, n), K1(0:3, 3, n), K2(0:3, 3, n), K3(0:3, 3, n), K4(0:3, 3, n))
         K1 = h*Vprima(V, M)
         K2 = h*Vprima(V+K1/2.0, M)
@@ -47,7 +51,7 @@ contains
         real(8), allocatable :: E(:,:,:)
         integer :: n
 
-        n = size(V, dim = 2)
+        n = size(V, dim = 3)
         allocate(E(0:3,3,n))
         do while(.true.)
             E = rk4SP(V, M, h) - rk4SP(rk4SP(V, M, h/2), M, h/2)
@@ -65,31 +69,28 @@ contains
         90 print *
     end subroutine est1
 
-    subroutine rk4(Vi, M, h, max, unit, format, hModif, tol)
+    subroutine rk4(Vi, M, h, tfinal, hModif, tol)
         implicit none
         logical,intent(in) :: hModif
-        integer, intent(in) :: unit
-        real(8), intent(in) :: max, tol, Vi(:,:,:), M(:)
+        real(8), intent(in) :: tfinal, tol, Vi(0:,:,:), M(:)
         real(8), intent(inout) :: h
-        character (len=8), intent(in):: format
         real(8), allocatable :: V(:,:,:)
         integer :: n
 
-        n = size(Vi, dim = 2)
+        n = size(Vi, dim = 3)
         allocate(V(0:3,3,n))
-        open(3, file = "h.txt")
-        write(unit, format) Vi
+        open(2, file = "datos.txt")
+        write(2, *) Vi
         V = Vi
-        do while (V(0,1,1) <= max)
+        do while (V(0,1,1) <= tfinal)
             if (hModif) then
                 write (3, '(F15.7)') h
                 call est1(V, M, h, tol)
             end if
             V = rk4SP(V, M, h)
-            write (unit, format) V
+            write (2, *) V
         end do
         close(3)
         deallocate(V)
     end subroutine rk4
-
 end module edo
