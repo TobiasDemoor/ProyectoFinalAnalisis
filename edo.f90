@@ -90,7 +90,7 @@ contains
             V = rk4SP(V, M, h)
             write (2, *) V
         end do
-        close(3)
+        close(2)
         deallocate(V)
     end subroutine rk4
 end module edo
