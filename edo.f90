@@ -5,8 +5,8 @@ contains
         real(8), allocatable :: Vprima(:,:,:)
         real(8) :: V(0:,:,:), M(:)
         real(8), parameter :: G = 6.67384e-11
-        real(8) :: Aux(3)
-        integer :: n, i, j
+        real(8) :: Aux
+        integer :: n, i, j, l
 
         n = size(V, dim = 3)
         allocate(Vprima(0:3, 3, n))
@@ -16,12 +16,20 @@ contains
         do i = 1, n
             Vprima(3,:,i) = 0
             do j = 1, i-1
-                Aux = G * M(i)*M(j)/sqrt((V(1,:,i)-V(1,:,j))**2) * (V(1,:,j)-V(1,:,i))/abs(V(1,:,j)-V(1,:,i))
-                Vprima(3,:,i) = Vprima(3,:,i) + Aux
+                do l =1 ,3 ! para evitar division por cero
+                    if (V(1,l,i) /= V(1,l,j)) then
+                        Aux = G * M(i)*M(j)/sqrt((V(1,l,i)-V(1,l,j))**2) * (V(1,l,j)-V(1,l,i))/abs(V(1,l,j)-V(1,l,i))
+                        Vprima(3,l,i) = Vprima(3,l,i) + Aux
+                    end if
+                end do
             end do
             do j = i+1, n
-                Aux = G * M(i)*M(j)/sqrt((V(1,:,i)-V(1,:,j))**2) * (V(1,:,j)-V(1,:,i))/abs(V(1,:,j)-V(1,:,i))
-                Vprima(3,:,i) = Vprima(3,:,i) + Aux
+                do l =1 ,3
+                    if (V(1,l,i) /= V(1,l,j)) then
+                        Aux = G * M(i)*M(j)/sqrt((V(1,l,i)-V(1,l,j))**2) * (V(1,l,j)-V(1,l,i))/abs(V(1,l,j)-V(1,l,i))
+                        Vprima(3,l,i) = Vprima(3,l,i) + Aux
+                    end if
+                end do
             end do
             Vprima(3,:,i) = Vprima(3,:,i)/M(i)
         end do
