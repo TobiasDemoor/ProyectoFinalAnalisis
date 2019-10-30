@@ -5,8 +5,8 @@ contains
         real(8), allocatable :: Vprima(:,:,:)
         real(8) :: V(0:,:,:), M(:)
         real(8), parameter :: G = 6.67384e-11
-        real(8) :: Aux
-        integer :: n, i, j, l
+        real(8) :: F, distcuad
+        integer :: n, i, j
 
         n = size(V, dim = 3)
         allocate(Vprima(0:3, 3, n))
@@ -16,20 +16,14 @@ contains
         do i = 1, n
             Vprima(3,:,i) = 0
             do j = 1, i-1
-                do l =1 ,3 ! para evitar division por cero
-                    if (V(1,l,i) /= V(1,l,j)) then
-                        Aux = G * M(i)*M(j)/sqrt((V(1,l,i)-V(1,l,j))**2) * (V(1,l,j)-V(1,l,i))/abs(V(1,l,j)-V(1,l,i))
-                        Vprima(3,l,i) = Vprima(3,l,i) + Aux
-                    end if
-                end do
+                distcuad = sum((V(1,:,j)-V(1,:,i))**2)  ! distancia al cuadrado
+                F = G * M(i)*M(j)/distcuad              ! Modulo de F
+                Vprima(3,:,i) = Vprima(3,:,i) + F * (V(1,:,j)-V(1,:,i))/sqrt(distcuad)
             end do
             do j = i+1, n
-                do l =1 ,3
-                    if (V(1,l,i) /= V(1,l,j)) then
-                        Aux = G * M(i)*M(j)/sqrt((V(1,l,i)-V(1,l,j))**2) * (V(1,l,j)-V(1,l,i))/abs(V(1,l,j)-V(1,l,i))
-                        Vprima(3,l,i) = Vprima(3,l,i) + Aux
-                    end if
-                end do
+                distcuad = sum((V(1,:,j)-V(1,:,i))**2)  ! distancia al cuadrado
+                F = G * M(i)*M(j)/distcuad              ! Modulo de F
+                Vprima(3,:,i) = Vprima(3,:,i) + F * (V(1,:,j)-V(1,:,i))/sqrt(distcuad)
             end do
             Vprima(3,:,i) = Vprima(3,:,i)/M(i)
         end do
