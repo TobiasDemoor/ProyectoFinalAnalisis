@@ -44,7 +44,7 @@ contains
         deallocate(K1, K2, K3, K4)
     end function
 
-    subroutine est1(V, M, h, tol)
+    subroutine ajusteH(V, M, h, tol)
         implicit none
         real(8), intent(in) :: V(:,:,:), M(:), tol
         real(8), intent(inout) :: h
@@ -60,15 +60,16 @@ contains
             if(error>=tol) then
                 h = h/2.0
             else
-                if(5*error<tol) then
+                if(100*error<tol) then
                     h = h*2
                 else
+                    ! aca corta las modificaciones del h
                     go to 90
                 end if
             end if
         end do
         90 print *
-    end subroutine est1
+    end subroutine ajusteH
 
     subroutine rk4(Vi, M, h, tfinal, hModif, tol)
         implicit none
@@ -90,8 +91,7 @@ contains
         V = Vi
         do while (t < tfinal)
             if (hModif) then
-                write (3, '(F15.7)') h
-                call est1(V, M, h, tol)
+                call ajusteH(V, M, h, tol)
             end if
             V = rk4SP(V, M, h)
             t = t + h
