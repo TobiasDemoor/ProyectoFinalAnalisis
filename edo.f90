@@ -88,8 +88,13 @@ contains
 
         open(9, file = "sgnptMasas.p", status = "REPLACE") !podriamos mandar el nombre como parametro pero meh
 
+        write(9,"(A)")"set nokey"
+        write(9,"(A)")"set xlabel 'x'"
+        write(9,"(A)")"set ylabel 'y'"
+        write(9,"(A)")"set zlabel 'z'"
         write(9,"(A)")"splot \"
-        do i = 1, nMasas-1    !le puse I1 para que no CHILLLLE y no quede espacio entre el punto e i (sirve para n<10)
+
+        do i = 1, nMasas-1
             write(9, "(A)")"'fort."//trim(str(i))//"' with lines ls "//trim(str(3*i))//" lw 3,\"
         end do 
         write(9, "(A)")"'fort."//trim(str(i))//"' with lines ls "//trim(str(3*i))//" lw 3"
