@@ -1,5 +1,5 @@
 module edo
-contains
+contains 
 
     function Vprima(V, M)
         implicit none
@@ -71,6 +71,22 @@ contains
         90 print *
     end subroutine ajusteH
 
+    subroutine scriptGnuplot(nMasas)
+        implicit none
+        integer, intent(in) :: nMasas
+        integer :: i
+
+        open(9, file = "sgnptMasas.p", status = "REPLACE") !podriamos mandar el nombre como parametro pero meh
+        write(9,"(A)")"splot \"
+        
+        do i = 1, nMasas-1    !le puse I1 para que no CHILLLLE y no quede espacio entre el punto e i (sirve para n<10)
+            write(9, "(A, I1, A, I2, A)")"'fort.", i, "' with lines lw 3 ls ", (3*i), ",\"
+        end do 
+            !para 9<n<99 cortar el do en 9 y hacerlo hasta n-1 (analogo para n>99, n>999, n>9999999999999999999999) 
+        write(9, "(A, I1, A, I2)")"'fort.", i, "' with lines lw 3 ls ", (3*i)
+        close(9)
+    end subroutine scriptGnuplot
+
     subroutine rk4(Vi, M, h, tfinal, hModif, tol)
         implicit none
         logical, intent(in) :: hModif
@@ -82,12 +98,16 @@ contains
 
         n = size(Vi, dim = 3)
         allocate(V(2, 3, n))
-        open(2, file = "datos.txt")
+
         do i = 1, n
-            write (2, *) Vi(1,:,i)
+            open(i)
+        end do
+        
+        do i = 1, n
+            write (i, *) Vi(1,:,i)
+            write (i, *)
             ! write (2, *) Vi(2,:,i)
         end do
-        write (2, *)
         V = Vi
         do while (t < tfinal)
             if (hModif) then
@@ -96,12 +116,16 @@ contains
             V = rk4SP(V, M, h)
             t = t + h
             do i = 1, n
-                write (2, *) V(1,:,i)
+                write (i, *) V(1,:,i)
+                write (i, *)
                 ! write (2, *) V(2,:,i)
             end do
-            write (2, *)
         end do
-        close(2)
+
+        do i = 1, n
+            close(i)
+        end do
+        
         deallocate(V)
     end subroutine rk4
 

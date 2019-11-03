@@ -15,4 +15,5 @@ program main
     h = 0.1
     tfinal = 1000
     call rk4(Vi, M, h, tfinal, .False., tol)
+    call scriptGnuplot(size(Vi, dim = 3))
 end program main
