@@ -1,6 +1,6 @@
 *.mod
 *.o
 *.out
-*.txt
+*.dat
 fort.*
 *.p
