@@ -1,14 +1,14 @@
 module edo
 contains 
-    subroutine LeeMasas(Vi, M, file)
+    subroutine LeeMasas(Vi, M, file, d)
         implicit none
         real(8), intent(out), allocatable :: Vi(:,:,:), M(:)
-        integer, intent(in) :: file
-        real(8) :: aux(3)
+        integer, intent(in) :: file, d
+        real(8) :: aux(d)
         integer :: n, i
 
         read(file, *) n
-        allocate(Vi(2,3,n),M(n))
+        allocate(Vi(2,d,n),M(n))
         do i = 1, n
             read(file, *) M(i)
             read(file, *) aux
@@ -25,24 +25,24 @@ contains
         real(8) :: V(:,:,:), M(:)
         real(8), parameter :: G = 6.67384e-11
         real(8) :: F, distcuad
-        integer :: n, i, j
+        integer :: d, n, i, j
 
+        d = size(V, dim = 2)
         n = size(V, dim = 3)
-        allocate(Vprima(2, 3, n))
+        allocate(Vprima(2, d, n))
         Vprima(1,:,:) = V(2,:,:) ! x' = v
         do i = 1, n ! v' = a
             Vprima(2,:,i) = 0
             do j = 1, i-1
                 distcuad = sum((V(1,:,j)-V(1,:,i))**2)  ! distancia al cuadrado
-                F = G * M(i)*M(j)/distcuad              ! Modulo de F
+                F = G * M(j)/distcuad              ! Modulo de F
                 Vprima(2,:,i) = Vprima(2,:,i) + F * (V(1,:,j)-V(1,:,i))/sqrt(distcuad)
             end do
             do j = i+1, n
                 distcuad = sum((V(1,:,j)-V(1,:,i))**2)  ! distancia al cuadrado
-                F = G * M(i)*M(j)/distcuad              ! Modulo de F
+                F = G * M(j)/distcuad              ! Modulo de F
                 Vprima(2,:,i) = Vprima(2,:,i) + F * (V(1,:,j)-V(1,:,i))/sqrt(distcuad)
             end do
-            Vprima(2,:,i) = Vprima(2,:,i)/M(i)
         end do
     end function Vprima
     
@@ -50,10 +50,11 @@ contains
         real(8) :: V(:,:,:), M(:)
         real(8), allocatable, dimension(:,:,:)  :: rk4SP, K1, K2, K3, K4
         real(8) :: h
-        integer :: n
+        integer :: d, n
 
+        d = size(V, dim = 2)
         n = size(V, dim = 3)
-        allocate(rk4SP(2, 3, n), K1(2, 3, n), K2(2, 3, n), K3(2, 3, n), K4(2, 3, n))
+        allocate(rk4SP(2, d, n), K1(2, d, n), K2(2, d, n), K3(2, d, n), K4(2, d, n))
         K1 = h*Vprima(V, M)
         K2 = h*Vprima(V+K1/2.0, M)
         K3 = h*Vprima(V+K2/2.0, M)
@@ -68,10 +69,11 @@ contains
         real(8), intent(inout) :: h
         real(8) :: error
         real(8), allocatable :: E(:,:,:)
-        integer :: n
+        integer :: d, n
 
+        d = size(V, dim = 2)
         n = size(V, dim = 3)
-        allocate(E(2, 3, n))
+        allocate(E(2, d, n))
         do while(.true.)
             E = rk4SP(V, M, h) - rk4SP(rk4SP(V, M, h/2), M, h/2)
             error = maxval(abs(E))
@@ -99,9 +101,9 @@ contains
         str = adjustl(str)
     end function str
 
-    subroutine scriptGnuplot(nMasas)
+    subroutine scriptGnuplot(nMasas, d)
         implicit none
-        integer, intent(in) :: nMasas
+        integer, intent(in) :: nMasas, d
         integer :: i
 
         open(9, file = "sgnptMasas.p", status = "REPLACE") !podriamos mandar el nombre como parametro pero meh
@@ -109,8 +111,12 @@ contains
         write(9,"(A)")"set nokey"
         write(9,"(A)")"set xlabel 'x'"
         write(9,"(A)")"set ylabel 'y'"
-        write(9,"(A)")"set zlabel 'z'"
-        write(9,"(A)")"splot \"
+        if (d == 3) then
+            write(9,"(A)")"set zlabel 'z'"
+            write(9,"(A)")"splot \"
+        else
+            write(9,"(A)")"plot \"
+        end if
 
         do i = 1, nMasas-1
             write(9, "(A)")"'fort."//trim(str(i))//"' with lines lw 3,\"
@@ -127,10 +133,11 @@ contains
         real(8), intent(inout) :: h
         real(8), allocatable :: V(:,:,:)
         real(8) :: t = 0 ! el tiempo lo llevamos como variable local solo para verificar t < tfinal
-        integer :: n, i
+        integer :: d, n, i
 
+        d = size(V, dim = 2)
         n = size(Vi, dim = 3)
-        allocate(V(2, 3, n))
+        allocate(V(2, d, n))
 
         do i = 1, n
             open(i)
