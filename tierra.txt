@@ -1,0 +1,9 @@
+2
+5.9736e24
+0   0   0
+0   0   0
+7.349e22
+3.56e8   0   0
+0   1.08e3   0
+
+#Los datos de la luna son en el perigeo (altura mínima velocidad máxima)

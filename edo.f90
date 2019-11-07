@@ -1,5 +1,23 @@
 module edo
 contains 
+    subroutine LeeMasas(Vi, M, file)
+        implicit none
+        real(8), intent(out), allocatable :: Vi(:,:,:), M(:)
+        integer, intent(in) :: file
+        real(8) :: aux(3)
+        integer :: n, i
+
+        read(file, *) n
+        allocate(Vi(2,3,n),M(n))
+        do i = 1, n
+            read(file, *) M(i)
+            read(file, *) aux
+            Vi(1,:,i) = aux
+            read(file, *) aux
+            Vi(2,:,i) = aux
+        end do
+        close(file)
+    end subroutine LeeMasas
 
     function Vprima(V, M)
         implicit none
@@ -95,9 +113,9 @@ contains
         write(9,"(A)")"splot \"
 
         do i = 1, nMasas-1
-            write(9, "(A)")"'fort."//trim(str(i))//"' with lines ls "//trim(str(3*i))//" lw 3,\"
+            write(9, "(A)")"'fort."//trim(str(i))//"' with lines lw 3,\"
         end do 
-        write(9, "(A)")"'fort."//trim(str(i))//"' with lines ls "//trim(str(3*i))//" lw 3"
+        write(9, "(A)")"'fort."//trim(str(nMasas))//"' with lines lw 3"
 
         close(9)
     end subroutine scriptGnuplot
@@ -117,7 +135,7 @@ contains
         do i = 1, n
             open(i)
         end do
-        open(99, file = "h.txt")
+        open(99, file = "h.dat")
         
         do i = 1, n
             write (i, *) Vi(1,:,i)
@@ -142,5 +160,4 @@ contains
         
         deallocate(V)
     end subroutine rk4
-
 end module edo
