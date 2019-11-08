@@ -112,14 +112,16 @@ contains
         write(9,"(A)")"set xlabel 'x'"
         write(9,"(A)")"set ylabel 'y'"
         if (d == 3) then
-            write(9,"(A)")"set zlabel 'z'"
+            write(9,"(A)")"set view equal xyz"
             write(9,"(A)")"splot \"
         else
             write(9,"(A)")"set size ratio -1"
             write(9,"(A)")"plot \"
         end if
 
-        do i = 1, nMasas-1
+
+        write(9, "(A)")"'fort."//trim(str(11))//"' with points lw 3,\" ! sino ni lo grafica
+        do i = 2, nMasas-1
             write(9, "(A)")"'fort."//trim(str(i+10))//"' with lines lw 3,\"
         end do 
         write(9, "(A)")"'fort."//trim(str(nMasas+10))//"' with lines lw 3"
