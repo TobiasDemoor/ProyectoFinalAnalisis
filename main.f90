@@ -7,7 +7,7 @@ program main
     real(8) :: tfinal, h, tol = 1
 
     open(2, file = 'sistSolar.dat')
-    call LeeMasas(Vi, M, 2, 2) ! en 2 dimensiones se ve mas lindo
+    call LeeMasas(Vi, M, 2, 3) ! en 2 dimensiones se ve mas lindo
     ! V(posicion/velocidad, x/y/z, masas)
     ! allocate(Vi(2,3,2),M(2))
     ! M = [dble(5e13), dble(1e11)]
