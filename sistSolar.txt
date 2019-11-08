@@ -1,22 +1,22 @@
 8
 1.9891e30
 3.302e23
-0.387 	0.20563069
+0.387 	0.20563069 7.00487
 4.8690e24
-0.723 	0.00677323
+0.723 	0.00677323 3.39471
 5.9742e24
-1.000 	0.01671022
+1.000 	0.01671022 0.00005
 6.4191e23
-1.524 	0.09341233
+1.524 	0.09341233 1.85061
 1.8987e27
-5.203 	0.04839266
+5.203 	0.04839266 1.30530
 5.6851e26
-9.539 	0.05415060
+9.539 	0.05415060 2.48446
 8.6849e25
-19.182 	0.04716771
+19.182 	0.04716771 0.76986
 1.0244e26
-30.058 	0.00858587
+30.058 	0.00858587 1.76917
 
 # El primer numero indica la cant de masas orbitantes
 # El segundo es la masa principal
-# despues van masa orbitante, semi eje mayor, eccentricidad
+# despues van masa orbitante, semi eje mayor, eccentricidad, inclinacion en grados sexagesimales
