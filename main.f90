@@ -6,7 +6,7 @@ program main
     ! en escalas astronomicas 1m es nada, asi que ndeah
     real(8) :: tfinal, h, tol = 1
 
-    open(2, file = 'tierra.txt')
+    open(2, file = 'sistSolar.txt')
     call LeeMasas(Vi, M, 2, 2)
     ! V(posicion/velocidad, x/y/z, masas)
     ! allocate(Vi(2,3,2),M(2))
@@ -20,7 +20,7 @@ program main
     ! ejecute con ajuste de h y vi que dentro de todo para el ejemplo que esta aca
     ! este es el mejor valor para todo t, igual con ajuste de h es mejor
     h = 2
-    tfinal = 27*24*3600 ! el período orbital de la luna es de 24 dias
+    tfinal = 3650*24*3600 ! el período orbital de la luna es de 24 dias
     call rk4(Vi, M, h, tfinal, .True., tol)
     call scriptGnuplot(size(Vi, dim = 3), size(Vi, dim = 2))
     call system("gnuplot -persist 'sgnptMasas.p'")
