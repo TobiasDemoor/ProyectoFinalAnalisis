@@ -1,10 +1,4 @@
-2
+1
 5.9736e24
-0   0   0
-0   -13.2866613098   0
 7.349e22
-3.56e8   0   0
-0   1.08e3   0
-
-#Los datos de la luna son en el perigeo (altura mínima velocidad máxima)
-#La velocidad en la tierra es para que la sumatoria de cantidad de movimiento de 0
+0.00257188153 0.0549

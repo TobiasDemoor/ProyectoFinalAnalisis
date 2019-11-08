@@ -6,7 +6,7 @@ program main
     ! en escalas astronomicas 1m es nada, asi que ndeah
     real(8) :: tfinal, h, tol = 1
 
-    open(2, file = 'sistSolar.txt')
+    open(2, file = 'sistSolar.dat')
     call LeeMasas(Vi, M, 2, 2) ! en 2 dimensiones se ve mas lindo
     ! V(posicion/velocidad, x/y/z, masas)
     ! allocate(Vi(2,3,2),M(2))
