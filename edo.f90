@@ -115,13 +115,14 @@ contains
             write(9,"(A)")"set zlabel 'z'"
             write(9,"(A)")"splot \"
         else
+            write(9,"(A)")"set size ratio -1"
             write(9,"(A)")"plot \"
         end if
 
         do i = 1, nMasas-1
-            write(9, "(A)")"'fort."//trim(str(i))//"' with lines lw 3,\"
+            write(9, "(A)")"'fort."//trim(str(i+10))//"' with lines lw 3,\"
         end do 
-        write(9, "(A)")"'fort."//trim(str(nMasas))//"' with lines lw 3"
+        write(9, "(A)")"'fort."//trim(str(nMasas+10))//"' with lines lw 3"
 
         close(9)
     end subroutine scriptGnuplot
@@ -140,12 +141,12 @@ contains
         allocate(V(2, d, n))
 
         do i = 1, n
-            open(i)
+            open(i+10)
         end do
         open(99, file = "h.dat")
         
         do i = 1, n
-            write (i, *) Vi(1,:,i)
+            write (i+10, *) Vi(1,:,i)
         end do
         V = Vi
         do while (t < tfinal)
@@ -156,13 +157,13 @@ contains
             V = rk4SP(V, M, h)
             t = t + h
             do i = 1, n
-                write (i, *) V(1,:,i)
+                write (i+10, *) V(1,:,i)
             end do
         end do
 
         close(99)
         do i = 1, n
-            close(i)
+            close(i+10)
         end do
         
         deallocate(V)
