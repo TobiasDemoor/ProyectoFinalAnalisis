@@ -22,6 +22,13 @@ while (i < 77687){
      'fort.17' every ::i::i title 'Saturno' with points lt 6 lw 3 lc 'yellow',\
      'fort.18' every ::i::i title 'Urano' with points lt 6 lw 3 lc 'blue',\
      'fort.19' every ::i::i title 'Neptuno' with points lt 6 lw 3 lc 'violet',\
-     
+     'fort.12' every ::i-498*i::i-216 with lines lt 6 lw 1 lc 'brown' notitle,\
+     'fort.13' every ::i-498*i::i-216 with lines lt 6 lw 1 lc 'orange' notitle,\
+     'fort.14' every ::i-498*i::i-216 with lines lt 6 lw 1 lc 'blue' notitle,\
+     'fort.15' every ::i-498*i::i-216 with lines lt 6 lw 1 lc 'red' notitle,\
+     'fort.16' every ::i-498*i::i-216 with lines lt 6 lw 3 lc 'brown' notitle,\
+     'fort.17' every ::i-498*i::i-216 with lines lt 6 lw 3 lc 'yellow' notitle,\
+     'fort.18' every ::i-498*i::i-216 with lines lt 6 lw 3 lc 'blue' notitle,\
+     'fort.19' every ::i-498*i::i-216 with lines lt 6 lw 3 lc 'violet' notitle,\
 }
 set output
