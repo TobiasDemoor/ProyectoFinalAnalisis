@@ -109,8 +109,6 @@ contains
         open(9, file = "sgnptMasas.p", status = "REPLACE") !podriamos mandar el nombre como parametro pero meh
 
         write(9,"(A)")"set nokey"
-        write(9,"(A)")"set xlabel 'x'"
-        write(9,"(A)")"set ylabel 'y'"
         if (d == 3) then
             write(9,"(A)")"set view equal xyz"
             write(9,"(A)")"splot \"
