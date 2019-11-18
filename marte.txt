@@ -1,0 +1,10 @@
+2
+1e3
+6.4185e23
+1.072e16
+9376 0.0151 1.093
+2.244e15 
+23460 0.0002 1.793
+
+# Los semiejes estan en kilometros
+# Los cuerpos orbitantes son Fobos y Deimos en ese orden
