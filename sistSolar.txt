@@ -1,4 +1,5 @@
 8
+149.6e9
 1.9891e30
 3.302e23
 0.387 	0.20563069 7.00487
@@ -18,5 +19,6 @@
 30.058 	0.00858587 1.76917
 
 # El primer numero indica la cant de masas orbitantes
-# El segundo es la masa principal
+# El segundo numero indica la unidad de medida de los semiejes, en este caso UA
+# El tercero es la masa principal
 # despues van masa orbitante, semi eje mayor, eccentricidad, inclinacion en grados sexagesimales
