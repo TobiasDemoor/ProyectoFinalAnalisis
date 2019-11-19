@@ -5,7 +5,7 @@ program cargaMasas
     real(8) :: Aux(3), Vel, U
     integer :: i, n
 
-    open(2, file = "marte.txt")
+    open(2, file = "Ejemplos/marte.txt")
     read(2, *) n
     read(2, *) U
     allocate(V(2,3,n+1), M(n+1))
