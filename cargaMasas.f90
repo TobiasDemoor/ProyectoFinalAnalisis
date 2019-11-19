@@ -5,7 +5,7 @@ program cargaMasas
     real(8) :: Aux(3), Vel, U
     integer :: i, n
 
-    open(2, file = "Ejemplos/marte.txt")
+    open(2, file = "Ejemplos/sistSolar.txt")
     read(2, *) n
     read(2, *) U
     allocate(V(2,3,n+1), M(n+1))
@@ -26,7 +26,7 @@ program cargaMasas
     do i = 1, 3
         V(2,i,1) = - sum(V(2,i,2:)*M(2:))/M(1)
     end do
-    open(3, file = "marte.dat")
+    open(3, file = "sistSolar.dat")
     write(3, *) n+1
     do i = 1, n+1
         write(3, *) M(i)

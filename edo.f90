@@ -45,10 +45,34 @@ contains
             end do
         end do
     end function Vprima
-    
+
+    function EulerSP(V, M, h)
+        real(8), allocatable :: EulerSP(:,:,:)
+        real(8) :: V (:,:,:), M(:)
+        real(8) :: h
+        integer :: d, n
+
+        d = size(V, dim = 2)
+        n = size(V, dim = 3)
+        allocate(EulerSP(2, d, n))
+        EulerSP = V + Vprima(V, M) * h
+    end function
+
+    function EulerMejorSp(V, M, h)
+        real(8), allocatable, dimension(:,:,:)  :: EulerMejorSp
+        real(8) :: V (:,:,:), M(:)
+        real(8) :: h
+        integer :: d, n
+
+        d = size(V, dim = 2)
+        n = size(V, dim = 3)
+        allocate(EulerMejorSp(2, d, n))
+        EulerMejorSp = V + h*Vprima(EulerSP(V, M, h/2), M)
+    end function
+
     function rk4SP(V, M, h)
-        real(8) :: V(:,:,:), M(:)
         real(8), allocatable, dimension(:,:,:)  :: rk4SP, K1, K2, K3, K4
+        real(8) :: V(:,:,:), M(:)
         real(8) :: h
         integer :: d, n
 
@@ -63,10 +87,31 @@ contains
         deallocate(K1, K2, K3, K4)
     end function
 
-    subroutine ajusteH(V, M, h, tol)
+    function MetodosSP(V, M, h, tipo)
+        implicit none
+        real(8), allocatable :: MetodosSP(:,:,:)
+        real(8) :: V(:,:,:), M(:)
+        real(8) :: h
+        integer :: tipo, d, n
+
+        d = size(V, dim = 2)
+        n = size(V, dim = 3)
+        allocate(MetodosSP(2, d, n))
+        select case (tipo)
+        case (1)
+            MetodosSP = EulerSp(V, M, h)
+        case (2)
+            MetodosSP = EulerMejorSp(V, M, h)
+        case (3)
+            MetodosSP = rk4SP(V, M, h)
+        end select
+    end function MetodosSP
+
+    subroutine ajusteH(V, M, h, tol, tipo)
         implicit none
         real(8), intent(in) :: V(:,:,:), M(:), tol
         real(8), intent(inout) :: h
+        integer, intent(in) :: tipo
         real(8) :: error
         real(8), allocatable :: E(:,:,:)
         integer :: d, n
@@ -75,12 +120,19 @@ contains
         n = size(V, dim = 3)
         allocate(E(2, d, n))
         do while(.true.)
-            E = rk4SP(V, M, h) - rk4SP(rk4SP(V, M, h/2), M, h/2)
+            select case (tipo)
+            case (1)
+                E = EulerSp(V, M, h) - EulerSP(EulerSP(V, M, h/2), M, h/2)
+            case (2)
+                E = EulerMejorSp(V, M, h) - EulerMejorSp(EulerMejorSp(V, M, h/2), M, h/2)
+            case (3)
+                E = rk4SP(V, M, h) - rk4SP(rk4SP(V, M, h/2), M, h/2)
+            end select
             error = maxval(abs(E))
             if(error>=tol) then
                 h = h/2.0
             else
-                if(1e6*error<tol) then ! con esto a veces lo aumenta a si que es razonable
+                if(1e3*error<tol) then ! con esto a veces lo aumenta a si que es razonable
                     h = h*2
                 else
                     ! aca corta las modificaciones del h
@@ -127,12 +179,13 @@ contains
         close(9)
     end subroutine scriptGnuplot
 
-    subroutine rk4(Vi, M, h, tfinal, hModif, tol)
+    subroutine Solucion(Vi, M, h, tfinal, hModif, tol, tipo)
         implicit none
         logical, intent(in) :: hModif
         real(8), intent(in) :: tfinal, tol, Vi(:,:,:), M(:)
         real(8), intent(inout) :: h
         real(8), allocatable :: V(:,:,:)
+        integer, intent(in) :: tipo
         real(8) :: t = 0 ! el tiempo lo llevamos como variable local solo para verificar t < tfinal
         integer :: d, n, i
 
@@ -151,10 +204,10 @@ contains
         V = Vi
         do while (t < tfinal)
             if (hModif) then
-                call ajusteH(V, M, h, tol)
+                call ajusteH(V, M, h, tol, tipo)
                 write(99, *) h
             end if
-            V = rk4SP(V, M, h)
+            V = MetodosSP(V, M, h, tipo)
             t = t + h
             do i = 1, n
                 write (i+10, *) V(1,:,i)
@@ -167,5 +220,5 @@ contains
         end do
         
         deallocate(V)
-    end subroutine rk4
+    end subroutine Solucion
 end module edo
