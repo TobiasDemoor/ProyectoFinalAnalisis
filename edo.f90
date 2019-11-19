@@ -155,7 +155,7 @@ contains
             if(error>=tol) then
                 h = h/2.0
             else
-                if(1e3*error<tol) then ! con esto a veces lo aumenta a si que es razonable
+                if(1e2*error<tol) then ! con esto a veces lo aumenta a si que es razonable
                     h = h*2
                 else
                     ! aca corta las modificaciones del h
