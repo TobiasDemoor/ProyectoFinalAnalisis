@@ -15,6 +15,7 @@ program main
     ! 1: euler simple
     ! 2: euler mejorado
     ! 3: rk4
+    ! 4: rkf
     call Solucion(Vi, M, h, tfinal, .True., tol, 4)
     call scriptGnuplot(size(Vi, dim = 3), size(Vi, dim = 2))
     call system("gnuplot -persist 'sgnptMasas.p'")
