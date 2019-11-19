@@ -87,6 +87,25 @@ contains
         deallocate(K1, K2, K3, K4)
     end function
 
+    function rkfSP(V, M, h)
+        real(8), allocatable, dimension(:,:,:)  :: rkfSP, K1, K2, K3, K4, K5, K6
+        real(8) :: V(:,:,:), M(:)
+        real(8) :: h
+        integer :: d, n
+
+        d = size(V, dim = 2)
+        n = size(V, dim = 3)
+        allocate(rkfSP(2, d, n), K1(2, d, n), K2(2, d, n), K3(2, d, n), K4(2, d, n), K5(2, d, n), K6(2, d, n))
+        K1 = h*Vprima(V, M)
+        K2 = h*Vprima(V + K1/4.0, M)
+        K3 = h*Vprima(V + (3.0*K1 + 9.0*K2)/32.0, M)
+        K4 = h*Vprima(V + (1932.0*K1 - 7200.0*K2 + 7296.0*K3)/2197.0, M)
+        K5 = h*Vprima(V + 439.0*K1/216.0 - 8.0*K2 + 3680.0*K3/513.0 - 845.0*K4/4104.0, M)
+        K6 = h*Vprima(V - 8.0*K1/27.0 + 2.0*K2 - 3544.0*K3/2565.0 + 1859.0*K4/4104.0 - 11.0*K5/40.0, M)
+        rkfSP = V + (25.0*K1/216.0 + 1408.0*K3/2565.0 + 2197.0*K4/4104.0 - K5/5.0)
+        deallocate(K1, K2, K3, K4, K5, K6)
+    end function
+
     function MetodosSP(V, M, h, tipo)
         implicit none
         real(8), allocatable :: MetodosSP(:,:,:)
@@ -104,6 +123,8 @@ contains
             MetodosSP = EulerMejorSp(V, M, h)
         case (3)
             MetodosSP = rk4SP(V, M, h)
+        case (4)
+            MetodosSP = rkfSP(V, M, h)
         end select
     end function MetodosSP
 
@@ -127,6 +148,8 @@ contains
                 E = EulerMejorSp(V, M, h) - EulerMejorSp(EulerMejorSp(V, M, h/2), M, h/2)
             case (3)
                 E = rk4SP(V, M, h) - rk4SP(rk4SP(V, M, h/2), M, h/2)
+            case (4)
+                E = rkfSP(V, M, h) - rkfSP(rkfSP(V, M, h/2), M, h/2)
             end select
             error = maxval(abs(E))
             if(error>=tol) then
