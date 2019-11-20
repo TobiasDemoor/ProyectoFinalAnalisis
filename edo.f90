@@ -209,9 +209,10 @@ contains
         real(8), intent(inout) :: h
         real(8), allocatable :: V(:,:,:)
         integer, intent(in) :: tipo
-        real(8) :: t = 0 ! el tiempo lo llevamos como variable local solo para verificar t < tfinal
+        real(8) :: t
         integer :: d, n, i
 
+        t = 0 ! el tiempo lo llevamos como variable local solo para verificar t < tfinal
         d = size(V, dim = 2)
         n = size(Vi, dim = 3)
         allocate(V(2, d, n))
