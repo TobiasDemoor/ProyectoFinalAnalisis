@@ -1,5 +1,5 @@
-7 dias sistema solar completo con h = 4, 2.2 GHz
-todos los tiempos estan en segundos de ejecucion
+#7 dias sistema solar completo con h = 4, 2.2 GHz
+#todos los tiempos estan en segundos de ejecucion
 
 Euler Simple
    9.5210919999999994        9.3364819999999984        8.6881780000000006        9.5790039999999976        9.4273060000000015     
