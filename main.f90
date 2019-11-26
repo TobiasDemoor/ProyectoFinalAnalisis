@@ -2,7 +2,7 @@ program main
     use edo
     implicit none
     real(8), allocatable :: Vi(:,:,:), M(:)
-    ! en escalas astronomicas 1m no es nada
+    ! en escalas astronomicas 1m es despreciable
     real(8) :: tfinal, h, tol = 1
 
     open(2, file = 'sistSolar.dat')
