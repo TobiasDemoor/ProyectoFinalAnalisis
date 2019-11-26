@@ -167,9 +167,6 @@ contains
     end subroutine ajusteH
 
     function str(k)
-        ! "Convert an integer to string."
-        ! Q: ¿Dónde conseguiste este codigo Timmy?
-        ! A: Internet
         character(len=20) :: str
         integer, intent(in) :: k
         write (str, *) k
