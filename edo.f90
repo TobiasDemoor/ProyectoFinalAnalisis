@@ -178,7 +178,7 @@ contains
         integer, intent(in) :: nMasas, d
         integer :: i
 
-        open(9, file = "sgnptMasas.p", status = "REPLACE") !podriamos mandar el nombre como parametro pero meh
+        open(9, file = "sgnptMasas.p", status = "REPLACE")
 
         write(9,"(A)")"set nokey"
         if (d == 3) then
