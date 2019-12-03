@@ -199,13 +199,24 @@ contains
         close(9)
     end subroutine scriptGnuplot
 
-    subroutine Solucion(Vi, M, h, tfinal, hModif, tol, tipo)
+    subroutine scriptGifGnuplot(nMasas, d, cantLineas)
+        implicit none
+        integer, intent(in) :: nMasas, d, cantLineas
+        integer :: i
+
+        open(9, file = "sgnptMasas.p", status = "REPLACE")
+
+        close(9)
+    end subroutine scriptGifGnuplot
+
+    subroutine Solucion(Vi, M, h, tfinal, hModif, tol, tipo, cantLineas)
         implicit none
         logical, intent(in) :: hModif
         real(8), intent(in) :: tfinal, tol, Vi(:,:,:), M(:)
         real(8), intent(inout) :: h
         real(8), allocatable :: V(:,:,:)
         integer, intent(in) :: tipo
+        integer, intent(out) :: cantLineas
         real(8) :: t
         integer :: d, n, i
 
@@ -222,6 +233,7 @@ contains
         do i = 1, n
             write (i+10, *) Vi(1,:,i)
         end do
+        cantLineas = 1
         V = Vi
         do while (t < tfinal)
             if (hModif) then
@@ -233,6 +245,7 @@ contains
             do i = 1, n
                 write (i+10, *) V(1,:,i)
             end do
+            cantLineas = cantLineas + 1
         end do
 
         close(99)

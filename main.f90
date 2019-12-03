@@ -2,6 +2,7 @@ program main
     use edo
     implicit none
     real(8), allocatable :: Vi(:,:,:), M(:)
+    integer :: cantLineas
     ! en escalas astronomicas 1m es despreciable
     real(8) :: tfinal, h, tol = 1
 
@@ -16,7 +17,8 @@ program main
     ! 2: euler mejorado
     ! 3: rk4
     ! 4: rkf
-    call Solucion(Vi, M, h, tfinal, .True., tol, 4)
+    call Solucion(Vi, M, h, tfinal, .True., tol, 4, cantLineas)
     call scriptGnuplot(size(Vi, dim = 3), size(Vi, dim = 2))
+    call scriptGifGnuplot(size(Vi, dim = 3), size(Vi, dim = 2), cantLineas)
     call system("gnuplot -persist 'sgnptMasas.p'")
 end program main
