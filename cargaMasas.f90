@@ -4,8 +4,11 @@ program cargaMasas
     real(8), allocatable :: V(:,:,:), M(:)
     real(8) :: Aux(3), Vel, U
     integer :: i, n
+    logical :: apoapsis
 
     open(2, file = "Ejemplos/sistSolar.txt")
+    apoapsis = .True. ! se calcula las masas inicialmente en el apoapsis
+    ! apoapsis = .False. ! se calcula las masas inicialmente en el periapsis
     read(2, *) n
     read(2, *) U
     allocate(V(2,3,n+1), M(n+1))
@@ -15,10 +18,15 @@ program cargaMasas
         read(2, *) M(i)
         read(2, *) Aux
         V(1,:,i) = 0
-        V(1,1,i)= (1-Aux(2))*Aux(1)*U
         V(2,:,i) = 0
-        Vel = sqrt(((1+Aux(2))*M(1)*G)/((1-Aux(2))*Aux(1)*U))
-        V(2,2,i) = Vel*cos(Aux(3)*rad)
+        if (apoapsis) then
+            V(1,1,i)= Aux(1)*U * (1+Aux(2)) ! Q = a(1+e)
+            Vel = sqrt( M(1)*G/(Aux(1)*U) * (1-Aux(2))/(1+Aux(2)) )
+        else
+            V(1,1,i)= Aux(1)*U * (1-Aux(2)) ! q = a(1-e)
+            Vel = sqrt( M(1)*G/(Aux(1)*U) * (1+Aux(2))/(1-Aux(2)) )
+        end if
+        V(2,2,i) = Vel*cos(Aux(3)*rad) ! paso sexagesimal a radianes
         V(2,3,i) = Vel*sin(Aux(3)*rad)
     end do
     close(2)
