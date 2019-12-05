@@ -173,6 +173,13 @@ contains
         str = adjustl(str)
     end function str
 
+    function strF(k)
+        character(len=20) :: strF
+        real(8), intent(in) :: k
+        write (strF, '(F20.3)') k
+        strF = adjustl(strF)
+    end function strF
+
     subroutine scriptGnuplot(nMasas, d)
         implicit none
         integer, intent(in) :: nMasas, d
@@ -199,13 +206,48 @@ contains
         close(9)
     end subroutine scriptGnuplot
 
-    subroutine scriptGifGnuplot(nMasas, d, cantLineas)
+    subroutine scriptGifGnuplot(nMasas, cantLineas, tfinal, cantFrames)
         implicit none
-        integer, intent(in) :: nMasas, d, cantLineas
+        integer, intent(in) :: nMasas, cantLineas, tfinal, cantFrames
         integer :: i
+        real(8) :: maxD, aux(3), h
+
+        maxD = 0
+        h = dble(cantLineas)/cantFrames
+        do i = 12, nMasas+10
+            open(i)
+            read(i, *) aux
+            if (maxval(abs(aux)) > maxD) then
+                maxD = maxval(abs(aux))
+            end if
+            close(i)
+        end do
 
         open(9, file = "sgnptMasas.p", status = "REPLACE")
-
+        write(9, "(A)") "set term gif animate"
+        write(9, "(A)") "set output 'sistema.gif'"
+        write(9, "(A)") "set xrange ["//trim(strF(-1 * maxD))//" to "//trim(strF(maxD))//"]"
+        write(9, "(A)") "set yrange ["//trim(strF(-1 * maxD))//" to "//trim(strF(maxD))//"]"
+        write(9, "(A)") "set zrange ["//trim(strF(-1 * maxD))//" to "//trim(strF(maxD))//"]"
+        write(9, "(A)") "set xlabel 'x'"
+        write(9, "(A)") "set ylabel 'y'"
+        write(9, "(A)") "set zlabel 'z'"
+        write(9, "(A)") "set style fill solid 1.0"
+        write(9, "(A)") "i = 0"
+        write(9, "(A)") "j = 0"
+        write(9, "(A)") "while (i < "//trim(str(cantLineas))//"){"
+        write(9, "(A)") "    set title sprintf('Tiempo %f', j)"
+        write(9, "(A)") "    j = j + "// trim(strF(dble(tfinal)/cantFrames))
+        write(9, "(A)") "    i = i + "// trim(strF(h))
+        write(9, "(A)") "    splot 'fort.11' every ::i::i title 'MPrincipal' with points lt 6 lw 5 lc 'red',\"
+        do i = 2, nMasas
+            write(9, "(A)", ADVANCE='NO') "    'fort.1"//trim(str(i))//"' every ::i::i title '"//trim(str(i))
+            write(9, "(A)") "' with points lt 6 lw 3 lc "//trim(str(i))//",\"
+            write(9, "(A)", ADVANCE='NO')"    'fort.1"//trim(str(i))//"' every ::i-"//trim(str(cantFrames))//"*i::i-"//trim(strF(h))
+            write(9, "(A)") " with lines lt 6 lw 1 lc "//trim(str(i))//" notitle,\"
+        end do
+        write(9, "(A)") "}"
+        write(9, "(A)") "set output"
         close(9)
     end subroutine scriptGifGnuplot
 

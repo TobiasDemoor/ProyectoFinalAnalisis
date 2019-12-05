@@ -6,7 +6,7 @@ program cargaMasas
     integer :: i, n
     logical :: apoapsis
 
-    open(2, file = "Ejemplos/sistSolar.txt")
+    open(2, file = "Ejemplos/marte.txt")
     apoapsis = .True. ! se calcula las masas inicialmente en el apoapsis
     ! apoapsis = .False. ! se calcula las masas inicialmente en el periapsis
     read(2, *) n
@@ -34,7 +34,7 @@ program cargaMasas
     do i = 1, 3
         V(2,i,1) = - sum(V(2,i,2:)*M(2:))/M(1)
     end do
-    open(3, file = "sistSolar.dat")
+    open(3, file = "marte.dat")
     write(3, *) n+1
     do i = 1, n+1
         write(3, *) M(i)
